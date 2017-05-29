@@ -2,25 +2,37 @@
  * Created by acer on 2017/5/28.
  */
 
-let fs = require( 'fs' );
+// {
+//     "time": true,
+//     "requestUrl": true,
+//     "userAgent": true,
+//     "ip": true
+// }
 
-fs.readdir( 'e:/DATA/logs/' , function ( err , data ) {
-	// console.log( data );
-	let len = data.length;
-	let str = '';
-	let index = 0;
-	data.forEach( function ( filename , i ) {
-		// console.log( filename );
-		fs.readFile( `e:/DATA/logs/${filename}` , 'utf8' , ( err , content ) => {
-			str += content;
-			if ( ++index === len ) {
-				console.log( "结束" );
-			}
-			// let num = content.split( '\n' );
-		} );
-	} );
-} );
 
-setInterval( () => {
+let fs = require('fs');
+let url = require('url');
 
-} , 1000 );
+let Obj = require('../lib/obj');
+
+fs.readdir('e:/LOGS/', function (err, data) {
+    // console.log( data );
+    data.forEach(function (filename, i) {
+        // console.log( filename );
+        !i && fs.readFile(`e:/LOGS/${filename}`, 'utf8', (err, content) => {
+            if (err) {
+                console.log(err);
+            } else {
+                let lines = content.split('\n');
+                let obj = JSON.parse(lines[0]);
+                Obj.extend(obj, url.parse(obj.requestUrl, true).query);
+                obj.wt = Number(obj.wt);
+                obj.jt = Number(obj.jt);
+                obj.st = Number(obj.st);
+                obj.bt = Number(obj.bt);
+                obj.time = Number(obj.time);
+                console.log(obj);
+            }
+        });
+    });
+});

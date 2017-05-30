@@ -52,32 +52,36 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
 
                                         let obj = JSON.parse(line);
                                         // 把符合要求的每行数据插入
-                                        if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1 && obj.requestUrl.search(/page=https?:\/\/sz\.jd\.com/) !== -1) {
-                                            shouldInsertLines++;
-                                            obj.wtime = obj.time;
-                                            Obj.extend(obj, url.parse(obj.requestUrl, true).query);
-                                            obj.wt = Number(obj.wt);
-                                            obj.jt = Number(obj.jt);
-                                            obj.st = Number(obj.st);
-                                            obj.bt = Number(obj.bt);
-                                            obj.time = Number(obj.time);
-                                            delete obj.header;
-                                            let area = ip.findSync(obj.ip);
-                                            obj.country = area[0];
-                                            obj.province = area[1];
-                                            if (-1 !== obj.userAgent.indexOf('iPhone')) {
-                                                obj.iPhone = true;
-                                                obj.mobile = true;
+                                        if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1) {
+                                            let urlObj = url.parse(obj.requestUrl, true).query;
+                                            if (urlObj.page.indexOf('sz.jd.com') !== -1) {
+                                                shouldInsertLines++;
+                                                obj.wtime = obj.time;
+                                                Obj.extend(obj, urlObj);
+                                                obj.wt = Number(obj.wt);
+                                                obj.jt = Number(obj.jt);
+                                                obj.st = Number(obj.st);
+                                                obj.bt = Number(obj.bt);
+                                                obj.time = Number(obj.time);
+                                                delete obj.header;
+                                                let area = ip.findSync(obj.ip);
+                                                obj.country = area[0];
+                                                obj.province = area[1];
+                                                if (-1 !== obj.userAgent.indexOf('iPhone')) {
+                                                    obj.iPhone = true;
+                                                    obj.mobile = true;
+                                                }
+                                                else if (obj.userAgent.indexOf('Android') !== -1) {
+                                                    obj.mobile = true;
+                                                    obj.Android = true;
+                                                }
+                                                else {
+                                                    obj.mobile = false;
+                                                    obj.PC = true;
+                                                    pcLines++;
+                                                }
+                                                insertData.push(obj)
                                             }
-                                            else if (obj.userAgent.indexOf('Android') !== -1) {
-                                                obj.mobile = true;
-                                                obj.Android = true;
-                                            } else {
-                                                obj.mobile = false;
-                                                obj.PC = true;
-                                                pcLines++;
-                                            }
-                                            insertData.push(obj)
                                         }
                                     }
                                 });

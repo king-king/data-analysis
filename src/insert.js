@@ -12,7 +12,8 @@ let task = require('../lib/task');
 
 
 let sumLines = 0;
-let szLines = 0;
+let szTimeLines = 0;
+let shouldInsertLines = 0;
 let pcLines = 0;
 
 let writer = fs.createWriteStream('../log/task.log', {flags: 'a'});
@@ -45,7 +46,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                         let obj = JSON.parse(line[0]);
                                         // 把符合要求的每行数据插入
                                         if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1 && obj.requestUrl.search(/https?:\/\/sz\.jd\.com/) !== -1) {
-                                            szLines++;
+                                            shouldInsertLines++;
                                             obj.wtime = obj.time;
                                             Obj.extend(obj, url.parse(obj.requestUrl, true).query);
                                             obj.wt = Number(obj.wt);
@@ -78,6 +79,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                         console.log(`${filename}文件数据在插入数据库过程中出错`);
                                         writer.write('==========================\n', err);
                                     } else {
+                                        szTimeLines += r.insertedCount;
                                         if (r.insertedCount !== insertData.length) {
                                             console.log(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}`);
                                             writer.write('==========================\n', `err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}`);
@@ -96,6 +98,8 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
         });
 
         task.q(jobs, function () {
+            console.log('数据插入工作进行完毕');
+            console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines}`);
             db.close();
             writer.end();
         });

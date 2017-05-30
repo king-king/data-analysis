@@ -51,7 +51,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                         line = line.replace(str, re);
 
                                         // 把符合要求的每行数据插入
-                                        if (obj.indexOf('/baseTime.jpg') !== -1) {
+                                        if (line.indexOf('/baseTime.jpg') !== -1) {
                                             let obj = JSON.parse(line);
                                             let urlObj = url.parse(obj.requestUrl, true).query;
                                             if (urlObj.page.indexOf('sz.jd.com') !== -1) {

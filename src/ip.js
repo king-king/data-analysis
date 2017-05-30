@@ -5,4 +5,4 @@
 let ip = require('../lib/ip');
 ip.load("../data/ip.dat");
 
-console.log(ip.findSync("111.204.243.4"));
+console.log(ip.findSync("222.129.142.72"));

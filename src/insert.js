@@ -29,10 +29,12 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
         let col = db.collection('visit');
         fs.readdir('e:/LOGS/', function (err, files) {
             if (err) {
+                console.log(err);
                 writer.write('==========================\n', err);
             } else {
-                files.forEach(function (filename) {
-                    jobs.push(function (done) {
+                files.forEach(function (filename, i) {
+                    !i && jobs.push(function (done) {
+                        console.log('开始读取文件');
                         fs.readFile(`e:/LOGS/${filename}`, 'utf8', (err, content) => {
                             if (err) {
                                 console.log(`在读取${filename}的出错`, err);
@@ -44,7 +46,11 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                 let insertData = [];
                                 lines.forEach(function (line, i) {
                                     if (line) {
-                                        let obj = JSON.parse(line[0]);
+                                        let str = line.slice(line.indexOf('"requestUrl":"') + 14, line.indexOf('","userAgent"'));
+                                        let re = str.replace(/"/g, '\\"');
+                                        line = line.replace(str, re);
+
+                                        let obj = JSON.parse(line);
                                         // 把符合要求的每行数据插入
                                         if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1 && obj.requestUrl.search(/https?:\/\/sz\.jd\.com/) !== -1) {
                                             shouldInsertLines++;
@@ -95,15 +101,15 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                         });
                     });
                 });
-            }
-        });
 
-        console.log('开始执行任务');
-        task.q(jobs, function () {
-            console.log('数据插入工作进行完毕');
-            console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines}`);
-            db.close();
-            writer.end();
+                console.log('开始执行任务');
+                task.q(jobs, function () {
+                    console.log('数据插入工作进行完毕');
+                    console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines}`);
+                    db.close();
+                    writer.end();
+                });
+            }
         });
     }
 

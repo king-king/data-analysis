@@ -38,6 +38,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                 console.log(`在读取${filename}的出错`, err);
                                 writer.write('==========================\n', err);
                             } else {
+                                console.log(`读取${filename}成功`);
                                 let lines = content.split('\n');
                                 sumLines += (lines.length - 1);
                                 let insertData = [];
@@ -97,6 +98,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
             }
         });
 
+        console.log('开始执行任务');
         task.q(jobs, function () {
             console.log('数据插入工作进行完毕');
             console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines}`);

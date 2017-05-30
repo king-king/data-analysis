@@ -1,0 +1,1 @@
+mongod --dbpath=e:/DATABASE --logpath=e:/DATABASE/mongo.log

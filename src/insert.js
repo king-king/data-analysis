@@ -47,12 +47,12 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                 lines.forEach(function (line, i) {
                                     if (line) {
                                         let str = line.slice(line.indexOf('"requestUrl":"') + 14, line.indexOf('","userAgent"'));
-                                        let re = str.replace(/"/g, '\\"');
+                                        let re = str.replace(/"/g, '\\"').replace(/\s/g, "");
                                         line = line.replace(str, re);
 
                                         let obj = JSON.parse(line);
                                         // 把符合要求的每行数据插入
-                                        if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1 && obj.requestUrl.search(/https?:\/\/sz\.jd\.com/) !== -1) {
+                                        if (obj.requestUrl.indexOf('/baseTime.jpg') !== -1 && obj.requestUrl.search(/page=https?:\/\/sz\.jd\.com/) !== -1) {
                                             shouldInsertLines++;
                                             obj.wtime = obj.time;
                                             Obj.extend(obj, url.parse(obj.requestUrl, true).query);
@@ -81,6 +81,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                         }
                                     }
                                 });
+                                console.log(`文件${filename}插入数据库`);
                                 col.insertMany(insertData, function (err, r) {
                                     if (err) {
                                         console.log(`${filename}文件数据在插入数据库过程中出错`);

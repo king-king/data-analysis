@@ -15,6 +15,9 @@ let sumLines = 0;
 let szTimeLines = 0;
 let shouldInsertLines = 0;
 let pcLines = 0;
+let baseTimeLines = 0;
+
+let dir = 'e:/31-01/';
 
 let writer = fs.createWriteStream('../log/task.log', {flags: 'a'});
 let jobs = [];
@@ -27,7 +30,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
     else {
         console.log('数据库连接成功');
         let col = db.collection('visit');
-        fs.readdir('e:/LOGS/', function (err, files) {
+        fs.readdir(dir, function (err, files) {
             if (err) {
                 console.log(err);
                 writer.write(err.toString());
@@ -35,7 +38,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                 files.forEach(function (filename, i) {
                     jobs.push(function (done) {
                         console.log('开始读取文件');
-                        fs.readFile(`e:/LOGS/${filename}`, 'utf8', (err, content) => {
+                        fs.readFile(`${dir + filename}`, 'utf8', (err, content) => {
                             if (err) {
                                 console.log(`在读取${filename}的出错`, err);
                                 writer.write(err.toString());
@@ -52,6 +55,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
 
                                         // 把符合要求的每行数据插入
                                         if (line.indexOf('/baseTime.jpg') !== -1) {
+                                            baseTimeLines++;
                                             let obj = JSON.parse(line);
                                             let urlObj = url.parse(obj.requestUrl, true).query;
                                             if (urlObj.page.indexOf('sz.jd.com') !== -1) {
@@ -101,10 +105,10 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                         szTimeLines += r.insertedCount;
                                         if (r.insertedCount !== insertData.length) {
                                             console.log(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}`);
-                                            writer.write(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}`);
+                                            writer.write(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}\n`);
                                         } else {
                                             console.log(`文件${filename}中的数据全部插入完毕`);
-                                            writer.write(`文件${filename}中的数据全部插入完毕`);
+                                            writer.write(`文件${filename}中的数据全部插入完毕\n`);
                                         }
                                         done();
                                     }
@@ -117,7 +121,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                 console.log('开始执行任务');
                 task.q(jobs, function () {
                     console.log('数据插入工作进行完毕');
-                    console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines}`);
+                    console.log(`一共有${sumLines}条数据，其中应插入${shouldInsertLines}条，实际插入${szTimeLines}条，pc端占比${pcLines / shouldInsertLines * 100}%，basetime占比${baseTimeLines / sumLines * 100}%`);
                     db.close();
                     writer.end();
                 });

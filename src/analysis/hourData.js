@@ -38,7 +38,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
             return `${s.getMonth() + 1}/${s.getDate()} ${s.getHours()}:${s.getMinutes()}:${s.getSeconds()}`;
         }
 
-        while (end < maxTime) {
+        while (cursor < maxTime) {
             let s = cursor, e = end;
             jobs.push(function (done) {
                 col.aggregate([
@@ -46,8 +46,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         $match: {
                             PC: true,
                             wtime: {
-                                $gte: s.toString(),// 大于等于
-                                $lt: e.toString()// 小于
+                                $gte: s,// 大于等于
+                                $lt: e// 小于
                             }
                         }
                     },
@@ -99,30 +99,30 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         });
 
                         // 去重
-                        let jieguo = {};
-                        result.forEach(function (re) {
-                            let u = url.parse(re['_id']);
-                            let key = u.hostname + u.pathname;
-                            if (jieguo[key] !== undefined) {
-                                jieguo[key].count += re.count;
-                                jieguo[key].wt = jieguo[key].wt.concat(re.wt);
-                                jieguo[key].st = jieguo[key].st.concat(re.st);
-                                jieguo[key].jt = jieguo[key].jt.concat(re.jt);
-                                jieguo[key].bt = jieguo[key].bt.concat(re.bt);
-                            }
-                            else {
-                                jieguo[key] = {
-                                    count: re.count,
-                                    wt: re.wt,
-                                    st: re.st,
-                                    jt: re.jt,
-                                    bt: re.bt
-                                };
-                            }
-                        });
+                        // let jieguo = {};
+                        // result.forEach(function (re) {
+                        //     let u = url.parse(re['_id']);
+                        //     let key = u.hostname + u.pathname;
+                        //     if (jieguo[key] !== undefined) {
+                        //         jieguo[key].count += re.count;
+                        //         jieguo[key].wt = jieguo[key].wt.concat(re.wt);
+                        //         jieguo[key].st = jieguo[key].st.concat(re.st);
+                        //         jieguo[key].jt = jieguo[key].jt.concat(re.jt);
+                        //         jieguo[key].bt = jieguo[key].bt.concat(re.bt);
+                        //     }
+                        //     else {
+                        //         jieguo[key] = {
+                        //             count: re.count,
+                        //             wt: re.wt,
+                        //             st: re.st,
+                        //             jt: re.jt,
+                        //             bt: re.bt
+                        //         };
+                        //     }
+                        // });
 
                         let log = {
-                            result: jieguo,
+                            result: result,
                             start: s,
                             end: e,
                             sum: sum

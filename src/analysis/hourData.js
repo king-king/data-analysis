@@ -9,7 +9,7 @@ let task = require('../../lib/task');
 let url = require('url');
 
 
-let w = fs.createWriteStream('../../log/out.js', {flags: 'w'});
+let w = fs.createWriteStream('../../log/out2.js', {flags: 'w'});
 let errlog = fs.createWriteStream('../../log/err.js', {flags: 'w'});
 
 MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
@@ -99,27 +99,27 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         });
 
                         // 去重
-                        // let jieguo = {};
-                        // result.forEach(function (re) {
-                        //     let u = url.parse(re['_id']);
-                        //     let key = u.hostname + u.pathname;
-                        //     if (jieguo[key] !== undefined) {
-                        //         jieguo[key].count += re.count;
-                        //         jieguo[key].wt = jieguo[key].wt.concat(re.wt);
-                        //         jieguo[key].st = jieguo[key].st.concat(re.st);
-                        //         jieguo[key].jt = jieguo[key].jt.concat(re.jt);
-                        //         jieguo[key].bt = jieguo[key].bt.concat(re.bt);
-                        //     }
-                        //     else {
-                        //         jieguo[key] = {
-                        //             count: re.count,
-                        //             wt: re.wt,
-                        //             st: re.st,
-                        //             jt: re.jt,
-                        //             bt: re.bt
-                        //         };
-                        //     }
-                        // });
+                        let jieguo = {};
+                        result.forEach(function (re) {
+                            let u = url.parse(re['_id']);
+                            let key = u.hostname + u.pathname;
+                            if (jieguo[key] !== undefined) {
+                                jieguo[key].count += re.count;
+                                jieguo[key].wt = jieguo[key].wt.concat(re.wt);
+                                jieguo[key].st = jieguo[key].st.concat(re.st);
+                                jieguo[key].jt = jieguo[key].jt.concat(re.jt);
+                                jieguo[key].bt = jieguo[key].bt.concat(re.bt);
+                            }
+                            else {
+                                jieguo[key] = {
+                                    count: re.count,
+                                    wt: re.wt,
+                                    st: re.st,
+                                    jt: re.jt,
+                                    bt: re.bt
+                                };
+                            }
+                        });
 
                         let log = {
                             result: result,

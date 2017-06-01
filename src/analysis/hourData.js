@@ -99,19 +99,19 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         });
 
                         // 去重
-                        let re = {};
+                        let jieguo = {};
                         result.forEach(function (re) {
                             let u = url.parse(re['_id']);
                             let key = u.hostname + u.pathname;
-                            if (re[key] !== undefined) {
-                                re[key].count += re.count;
-                                re[key].wt = re[key].wt.concat(re.wt);
-                                re[key].st = re[key].st.concat(re.st);
-                                re[key].jt = re[key].jt.concat(re.jt);
-                                re[key].bt = re[key].bt.concat(re.bt);
+                            if (jieguo[key] !== undefined) {
+                                jieguo[key].count += re.count;
+                                jieguo[key].wt = jieguo[key].wt.concat(re.wt);
+                                jieguo[key].st = jieguo[key].st.concat(re.st);
+                                jieguo[key].jt = jieguo[key].jt.concat(re.jt);
+                                jieguo[key].bt = jieguo[key].bt.concat(re.bt);
                             }
                             else {
-                                re[key] = {
+                                jieguo[key] = {
                                     count: re.count,
                                     wt: re.wt,
                                     st: re.st,
@@ -122,7 +122,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         });
 
                         let log = {
-                            result: re,
+                            result: jieguo,
                             start: s,
                             end: e,
                             sum: sum
@@ -143,7 +143,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
             errlog.end();
             db.close();
             console.log(`finish`);
-            console.log(`the spend time is ${Date.now() - ttt}s`)
+            console.log(`the spend time is ${(Date.now() - ttt) / 1000}s`)
         });
 
     }

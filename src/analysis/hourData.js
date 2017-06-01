@@ -93,7 +93,6 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         errlog.write(`===========================\n${getFullTime(s)} 至 ${getFullTime(e)} 失败` + JSON.stringify(err) + '\n===========================');
                     }
                     else {
-                        console.log(`共花费${(Date.now() - t0) / 1000}s`, result.length);
                         let sum = 0;
                         result.forEach(function (d) {
                             sum += d.count;

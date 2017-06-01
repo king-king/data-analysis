@@ -2,6 +2,8 @@
  * Created by wangqun6 on 2017/6/1.
  */
 
+// 查找时间范围
+
 let MongoClient = require('mongodb').MongoClient;
 let fs = require('fs');
 

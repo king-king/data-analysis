@@ -116,6 +116,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
 
         let ttt = Date.now();
         task.q(jobs, function () {
+            w.end();
+            errlog.end();
+            db.close();
             console.log(`finish`);
             console.log(`the spend time is ${Date.now() - ttt}s`)
         });

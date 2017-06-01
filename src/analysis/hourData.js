@@ -6,6 +6,7 @@
 let MongoClient = require('mongodb').MongoClient;
 let fs = require('fs');
 let task = require('../../lib/task');
+let url = require('url');
 
 
 let w = fs.createWriteStream('../../log/out.js', {flags: 'w'});
@@ -18,7 +19,6 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
     else {
         console.log('连接成功');
         let col = db.collection('visit');
-        let t0 = Date.now();
         //{  maxTime: '1496247908942', minTime: '1495698816629' }
         let maxTime = 1496247908942,
             minTime = 1495698816629,
@@ -97,8 +97,32 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                         result.forEach(function (d) {
                             sum += d.count;
                         });
+
+                        // 去重
+                        let re = {};
+                        result.forEach(function (re) {
+                            let u = url.parse(re['_id']);
+                            let key = u.hostname + u.pathname;
+                            if (re[key] !== undefined) {
+                                re[key].count += re.count;
+                                re[key].wt = re[key].wt.concat(re.wt);
+                                re[key].st = re[key].st.concat(re.st);
+                                re[key].jt = re[key].jt.concat(re.jt);
+                                re[key].bt = re[key].bt.concat(re.bt);
+                            }
+                            else {
+                                re[key] = {
+                                    count: re.count,
+                                    wt: re.wt,
+                                    st: re.st,
+                                    jt: re.jt,
+                                    bt: re.bt
+                                };
+                            }
+                        });
+
                         let log = {
-                            result: result,
+                            result: re,
                             start: s,
                             end: e,
                             sum: sum

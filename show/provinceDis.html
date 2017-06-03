@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #main {
+            width: 900px;
+            height: 900px;
+        }
+    </style>
+</head>
+<body>
+<div id="main"></div>
+<script src="../log/province.js"></script>
+<script src="../front/echarts.js"></script>
+<script src="../front/china.js"></script>
+<script>
+    var chart = echarts.init(document.getElementById('main'));
+    var min = province[0].count,
+        max = province[0].count;
+    province.forEach(function (item) {
+        item.name = item['_id'];
+        if (item.count > max) {
+            max = item.count;
+        }
+        if (item.count < min) {
+            min = item.count;
+        }
+    });
+    chart.setOption({
+        visualMap: {
+            min: min,
+            max: max,
+            left: 'left',
+            top: 'bottom',
+            text: ['高', '低'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                dataView: {readOnly: false},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        series: [
+            {
+                label: {
+                    normal: {
+                        show: true
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                name: 'pv分布',
+                type: 'map',
+                mapType: 'china',
+                data: province
+            }
+        ]
+    });
+</script>
+</body>
+</html>

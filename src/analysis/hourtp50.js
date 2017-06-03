@@ -4,11 +4,6 @@
 
 // 得到每个页面每小时的tp50
 
-/**
- * Created by wangqun6 on 2017/6/1.
- */
-// 得到每小时的数据，每个页面的数据
-
 let fs = require('fs');
 let task = require('../../lib/task');
 let url = require('url');

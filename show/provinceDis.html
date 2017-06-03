@@ -15,8 +15,9 @@
 <script src="../log/province.js"></script>
 <script src="../front/echarts.js"></script>
 <script src="../front/china.js"></script>
+<script src="../front/macarons.js"></script>
 <script>
-    var chart = echarts.init(document.getElementById('main'));
+    var chart = echarts.init(document.getElementById('main'), 'macarons');
     var min = province[0].count,
         max = province[0].count;
     province.forEach(function (item) {
@@ -63,7 +64,6 @@
                 name: '访问量',
                 type: 'map',
                 mapType: 'china',
-                roam: false,
                 label: {
                     normal: {
                         show: true
@@ -75,7 +75,7 @@
                 data: province
             }
         ]
-    }, true);
+    });
 </script>
 </body>
 </html>

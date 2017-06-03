@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .page-count-border {
+            margin: 20px;
+            width: 900px;
+            border: 1px solid black;
+            font-family: '微软雅黑', sans-serif;
+        }
+
+        .padding-left-10 {
+            padding-left: 10px;
+        }
+
+        .text-align-center {
+            text-align: center;
+        }
+
+        .page-count-border-line {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .page-count-border-num {
+            width: 10%;
+        }
+
+        .page-count-border-page {
+            width: 40%;
+        }
+
+        .page-count-border-count {
+            width: 50%;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .page-count-border-rate-border {
+            width: 80%;
+            display: inline-block;
+        }
+
+        .rate {
+            height: 10px;
+            background: blue;
+            border-radius: 3px;
+        }
+
+        .page-count-border-line {
+            border-bottom: 1px solid gray;
+        }
+
+        .percent-50 {
+            border-bottom: 3px solid orangered;
+        }
+
+        .percent-90 {
+            border-bottom: 3px solid green;
+        }
+    </style>
+</head>
+<body ng-app="main">
+<div class="page-count-border" ng-controller="ctrl">
+    <div class="page-count-border-line">
+        <div class="page-count-border-num bold padding-left-10">序号</div>
+        <div class="page-count-border-page bold">页面</div>
+        <div class="page-count-border-count bold">数量</div>
+    </div>
+    <div ng-repeat="d in data" class="page-count-border-line" ng-class="{'percent-50':d.per50,'percent-90':d.per90}">
+        <div class="page-count-border-num padding-left-10" ng-bind="$index+1"></div>
+        <div class="page-count-border-page" ng-bind="d.name"></div>
+        <div class="page-count-border-count">
+            <div class="page-count-border-rate-border">
+                <div class="rate" ng-style="d.width"></div>
+            </div>
+            <span ng-bind="d.count"></span>
+        </div>
+    </div>
+</div>
+<script src="../front/angular.js"></script>
+<script src="../log/pageCount.js"></script>
+<script>
+    let main = angular.module('main', []);
+    main.controller('ctrl', ['$scope', function (s) {
+        let sum = 0;
+        data.forEach(function (item) {
+            sum += item.count;
+        });
+        let leijia = 0;
+//        data = data.slice(1, data.length);
+        s.data = data;
+        s.sum = data[0].count;
+        let moreper50 = false;
+        let moreper90 = false;
+        s.data.forEach(function (item) {
+            item.name = item.name.replace('sz.jd.com', '');
+            item.percent = item.count / s.sum * 100;
+            leijia += item.count;
+            if (!moreper50 && leijia / sum >= 0.5) {
+                item.per50 = true;
+                moreper50 = true;
+            }
+            console.log(leijia, sum, leijia / sum);
+            if (!moreper90 && leijia / sum >= 0.9) {
+                item.per90 = true;
+                moreper90 = true;
+            }
+            item.width = {
+                width: item.percent + "%"
+            }
+        });
+
+    }]);
+</script>
+</body>
+</html>

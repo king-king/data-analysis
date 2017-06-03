@@ -7,7 +7,7 @@
 
 let MongoClient = require('mongodb').MongoClient;
 let fs = require('fs');
-let writer = fs.createWriteStream('../../log/userAgent.js', {flags: 'a'});
+let writer = fs.createWriteStream('../../important/userAgent.js', {flags: 'a'});
 
 MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
     if (err) {

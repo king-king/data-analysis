@@ -106,7 +106,7 @@ MongoClient.connect('mongodb://localhost:27017/analysis', function (err, db) {
                                             console.log(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}`);
                                             writer.write(`err：文件${filename}应该插入${insertData.length},实际插入${r.insertedCount}\n`);
                                         } else {
-                                            console.log(`文件${filename}中的数据全部插入完毕 进度${i}/${files.length}`);
+                                            console.log(`文件${filename}中的数据全部插入完毕 进度${i + 1}/${files.length}`);
                                             writer.write(`文件${filename}中的数据全部插入完毕\n`);
                                         }
                                     }

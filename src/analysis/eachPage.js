@@ -36,9 +36,9 @@ fs.readFile('../../important/pageTime.js', 'utf-8', function (err, content) {
             line = JSON.parse(line);
             for (let pageUrl in line.result) {
                 pageSet[pageUrl].wt = pageSet[pageUrl].wt.concat(line.result[pageUrl].wt);
-                pageSet[pageUrl].bt = pageSet[pageUrl].wt.concat(line.result[pageUrl].bt);
-                pageSet[pageUrl].jt = pageSet[pageUrl].wt.concat(line.result[pageUrl].jt);
-                pageSet[pageUrl].st = pageSet[pageUrl].wt.concat(line.result[pageUrl].st);
+                pageSet[pageUrl].bt = pageSet[pageUrl].bt.concat(line.result[pageUrl].bt);
+                pageSet[pageUrl].jt = pageSet[pageUrl].jt.concat(line.result[pageUrl].jt);
+                pageSet[pageUrl].st = pageSet[pageUrl].st.concat(line.result[pageUrl].st);
             }
         }
         console.log(`行分析进度${(i + 1) / lines.length * 100}%`)

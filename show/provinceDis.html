@@ -21,6 +21,7 @@
         max = province[0].count;
     province.forEach(function (item) {
         item.name = item['_id'];
+        item.value = item.count;
         if (item.count > max) {
             max = item.count;
         }
@@ -28,7 +29,16 @@
             min = item.count;
         }
     });
+
     chart.setOption({
+        title: {
+            text: '访问量各省分布',
+            subtext: '',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
         visualMap: {
             min: min,
             max: max,
@@ -50,6 +60,10 @@
         },
         series: [
             {
+                name: '访问量',
+                type: 'map',
+                mapType: 'china',
+                roam: false,
                 label: {
                     normal: {
                         show: true
@@ -58,13 +72,10 @@
                         show: true
                     }
                 },
-                name: 'pv分布',
-                type: 'map',
-                mapType: 'china',
                 data: province
             }
         ]
-    });
+    }, true);
 </script>
 </body>
 </html>

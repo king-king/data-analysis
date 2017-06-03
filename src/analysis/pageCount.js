@@ -45,8 +45,6 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
         ], function (err, arr) {
             if (err) {
                 console.log(err);
-                console.log(`${getFullTime(s)} 至 ${getFullTime(e)} 失败`);
-                errlog.write(`===========================\n${getFullTime(s)} 至 ${getFullTime(e)} 失败` + JSON.stringify(err) + '\n===========================');
             }
             else {
                 console.log('压缩前' + arr.length);
@@ -74,7 +72,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                 });
                 w.write(JSON.stringify(result));
                 w.end();
-                console.log(`共花费${Date.now() - ttt}s`, result.length);
+                console.log(`共花费${(Date.now() - ttt) / 1000}s`, result.length);
+                db.close();
             }
         });
 

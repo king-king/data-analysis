@@ -20,7 +20,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
         console.log('连接成功');
         let col = db.collection('visit');
         //{  maxTime: '1496247908942', minTime: '1495698816629' }
-        let maxTime = 1496247908942,
+        let maxTime = 1496391059269,
             minTime = 1495698816629,
             diff = maxTime - minTime,
             oneHour = 1000 * 60 * 60;
@@ -38,8 +38,10 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
             return `${s.getMonth() + 1}/${s.getDate()} ${s.getHours()}:${s.getMinutes()}:${s.getSeconds()}`;
         }
 
+        let index = 0;
         while (cursor < maxTime) {
             let s = cursor, e = end;
+            let ii = ++index;
             jobs.push(function (done) {
                 col.aggregate([
                     {
@@ -128,7 +130,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {
                             sum: sum
                         };
                         w.write(JSON.stringify(log) + '\n');
-                        console.log(`${getFullTime(s)} 至 ${getFullTime(e)} 完毕 ${(e - minTime) / diff * 100}%`);
+                        console.log(`${getFullTime(s)} 至 ${getFullTime(e)} ${ii} ${jobs.length }完毕 ${ii / jobs.length * 100}%`);
                     }
                     done();
                 });

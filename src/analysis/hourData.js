@@ -9,7 +9,7 @@ let task = require('../../lib/task');
 let url = require('url');
 
 
-let w = fs.createWriteStream('../../log/out.js', {flags: 'w'});
+let w = fs.createWriteStream('../../log/pageTime.js', {flags: 'w'});
 let errlog = fs.createWriteStream('../../log/err.js', {flags: 'w'});
 
 MongoClient.connect('mongodb://127.0.0.1:27017/analysis', function (err, db) {

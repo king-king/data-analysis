@@ -2,7 +2,7 @@
  * Created by wangqun6 on 2017/6/3.
  */
 
-// 得到每个页面每小时的tp50
+// 得到每个页面每小时的tp50、tp90
 
 let fs = require('fs');
 let task = require('../../lib/task');

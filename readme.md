@@ -3,5 +3,5 @@
 * pageCount.js -> 计算指定时间范围内每个页面的访问次数（生成pageCount.data）
 * hourData.js -> 得到指定时间范围内指定页面的数据（st、wt、jt、bt等）
 * province.js -> 得到每个省份的访问数量
-* eachPage.js -> 得到每个页面的总tp50、tp90
-* hourtp50.js -> 得到每个页面每小时的tp50、tp90
+* sumtp50-tp90.js -> 得到每个页面的总tp50、tp90
+* hourtp50-90.js -> 得到每个页面每小时的tp50、tp90
